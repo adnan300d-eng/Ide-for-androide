@@ -13,5 +13,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Ide-for-androide"
+rootProject.name = "fae"
 
