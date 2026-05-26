@@ -20,12 +20,13 @@ jobs:
           distribution: 'zulu'
           java-version: '17'
 
-      - name: Initialize Gradle Wrapper
-        run: |
-          gradle wrapper --gradle-version 8.2
+      - name: Setup Gradle (Fixed Version)
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: 8.2
 
-      - name: Build APK with Gradle
-        run: ./gradlew assembleDebug
+      - name: Build APK Directly
+        run: gradle assembleDebug --stacktrace
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
