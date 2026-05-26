@@ -14,54 +14,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.sp
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.RequestBody.Companion.toRequestBody
-import java.util.concurrent.TimeUnit
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState: Bundle?)
+        super.onCreate(savedInstanceState)
         setContent {
             TerminalSimulation()
-        }
-    }
-}
-
-sealed class BuildResult {
-    data class Success(val downloadUrl: String) : BuildResult()
-    data class Error(val message: String) : BuildResult()
-}
-
-object BuildNetworkClient {
-    private val client = OkHttpClient.Builder()
-        .connectTimeout(30, TimeUnit.SECONDS)
-        .readTimeout(5, TimeUnit.MINUTES)
-        .build()
-
-    private val JSON_MEDIA_TYPE = "application/json; charset=utf-8".toMediaType()
-
-    suspend fun requestCloudBuild(projectName: String, sourceCode: String): BuildResult = withContext(Dispatchers.IO) {
-        try {
-            val json = "{\"projectName\":\"$projectName\",\"sourceCode\":\"$sourceCode\"}"
-            val body = json.toRequestBody(JSON_MEDIA_TYPE)
-            val request = Request.Builder()
-                .url("https://your-backend.com/api/v1/build")
-                .post(body)
-                .build()
-
-            client.newCall(request).execute().use { response ->
-                if (response.isSuccessful) {
-                    BuildResult.Success(response.body?.string() ?: "")
-                } else {
-                    BuildResult.Error("فشلت العملية: ${response.code}")
-                }
-            }
-        } catch (e: Exception) {
-            BuildResult.Error(e.message ?: "خطأ غير معروف")
         }
     }
 }
@@ -93,4 +51,3 @@ fun TerminalSimulation() {
         }
     }
 }
-
